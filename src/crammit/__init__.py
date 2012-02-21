@@ -91,9 +91,13 @@ class AssetManager(object):
     def _compress(self, data):
         compresslevel = 9 # max
         buffer = StringIO.StringIO()
-        with gzip.GzipFile(fileobj=buffer, mode='wb',
-                           compresslevel=compresslevel) as fout:
+        try:
+            fout = gzip.GzipFile(fileobj=buffer, mode='wb',
+                           compresslevel=compresslevel)
             fout.write(data)
+        except:
+            fout.close()
+            raise
         return buffer.getvalue()
 
     def _process_bundle(self, name, paths, type):
